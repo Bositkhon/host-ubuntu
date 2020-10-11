@@ -85,10 +85,13 @@ int main()
 				scanf(" %d", &bytes);
 				
 				char *buffer = (char *)calloc(bytes, sizeof(char));
-				read(file, buffer, bytes);
+				if (read(file, buffer, bytes) < 0) {
+				   printf("The problem occured while reading the file\n");
+				   break;
+				}
 				
 				printf("The output is\n");
-				printf("%s", buffer);
+				printf("%s\n", buffer);
 				break;
 			}
 			case '4':
@@ -98,7 +101,7 @@ int main()
 				
 				scanf(" %s", text);
 
-			  if (write(file, text, MAX_SIZE) != MAX_SIZE) {
+			  if (write(file, text, MAX_SIZE) < 0) {
 					printf("The problem occurred while writing to a file.\n");
 					break;
 				}
@@ -108,10 +111,16 @@ int main()
 			}
 			case '5':
 			{
+			  if (file < 0) {
+			    printf("Please open a file first\n");
+			    break;
+			  }
+			  
 				printf("Please choose the origin\n");
 				printf("1. Beginning\n");
 				printf("2. Current position\n");
 				printf("3. End\n");
+				
 				char selectedPosition;
 				int position;
 				scanf(" %c", &selectedPosition);
@@ -129,7 +138,6 @@ int main()
 				int offset;
 				scanf(" %d", &offset);
 				
-				
 				lseek(file, offset, position);
 				
 				printf("Please indicate whether you want to write or read from the origin\n");
@@ -145,7 +153,10 @@ int main()
 						scanf(" %d", &bytes);
 						
 						char *buffer = (char *)calloc(bytes, sizeof(char));
-						read(file, buffer, bytes);
+						if (read(file, buffer, bytes) < 0) {
+						  printf("The problem occurred while reading from the file\n");
+						  break;
+						}
 						
 						printf("%s", buffer);
 						break;
@@ -156,7 +167,11 @@ int main()
 						char *text = (char *)calloc(MAX_SIZE, sizeof(char));
 						scanf(" %s", text);
 						
-						write(file, text, 512);
+						if (write(file, text, MAX_SIZE) < 0) {
+						  printf("The problem occurred while writing to a file\n");
+						  break;
+						}
+						
 						break;
 					}
 					default: {
@@ -174,7 +189,11 @@ int main()
 			  char *sourceFile = (char *) calloc(64, sizeof(char));
 			  scanf(" %s", sourceFile);
 			  printf("%s", sourceFile);
-			  unlink(sourceFile);
+			  if (unlink(sourceFile) < 0) {
+			    printf("Unable to delete the file\n");
+			    break;
+			  }
+			  
 				break;
 			}
 			case '7':
@@ -185,7 +204,10 @@ int main()
 			  scanf(" %s", oldFile);
 			  printf("Please enter the new name of the file\n");
 			  scanf(" %s", newFile);
-			  rename(oldFile, newFile);
+			  if (rename(oldFile, newFile)) {
+			    printf("Unable to rename the file\n");
+			    break;
+			  }
 				break;
       }
 			case '8':
@@ -195,10 +217,20 @@ int main()
 			  scanf(" %s", sourceFilename);
 			  int sourceFile = open(sourceFilename, O_RDONLY, 0);
 			  
+			  if (sourceFile < 0) {
+			    printf("Unable to open or create a file\n");
+			    break;
+			  }
+			  
         printf("Please enter the name of a new file\n");
 			  char *destinationFilename = (char *)calloc(MAX_SIZE, sizeof(char));
 			  scanf(" %s", destinationFilename);
 			  int destinationFile = open(destinationFilename, O_CREAT | O_WRONLY, DEF_MODE);
+			 
+			  if (destinationFile < 0) {
+			    printf("Unable to create a new file\n");
+			    break;
+			  }
 			  
 			  char buf;
 			  while(read(sourceFile, &buf, 1) != 0) {
@@ -206,11 +238,15 @@ int main()
 			    write(destinationFile, &buf, 1);
 			  }
 			  
+			  close(sourceFile);
+			  close(destinationFile);
+			  
 				break;
 			}
 			case '9':
 			{
 			  close(file);
+			  printf("Good bye\n");
   			break;
 			}
 			default:

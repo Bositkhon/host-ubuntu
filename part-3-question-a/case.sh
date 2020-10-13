@@ -1,6 +1,6 @@
 #!/bin/bash
-
-loop = 1
+#Menu Driven program to perform listed operations
+loop=1
 while [ $loop -eq 1 ]
 do
   echo ...............................................
@@ -74,6 +74,7 @@ do
     ;;
   11)
     echo QUITTING....GOOD BYE
+    break;
     ;;
   *)
     echo INVALID CHOICE - READ MENU CORRECTLY

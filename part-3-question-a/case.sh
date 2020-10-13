@@ -63,7 +63,8 @@ do
   10)
     echo ENTER NAME OF THE FILE TO DELETE:
     read FILE
-    echo ARE YOU SURE - CONFIRM 1 OR 0 read OK
+    echo ARE YOU SURE - CONFIRM 1 OR 0
+    read OK
     if [ $OK -eq 1 ]
     then
     rm $FILE

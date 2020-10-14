@@ -11,3 +11,5 @@ do
   A=$(expr $A + 1)
 done
 echo FACTORIAL OF $n = $B
+
+# bositkhon
